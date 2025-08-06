@@ -11,6 +11,11 @@ async fn main() {
         if is_key_pressed(KeyCode::Escape) {
             break;
         }
+
+        if is_key_pressed(KeyCode::R) {
+            app.clear();
+        }
+        
         draw_ui(&app);
     
         next_frame().await;
