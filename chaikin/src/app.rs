@@ -1,5 +1,3 @@
-use std::{thread, time};
-
 use macroquad::prelude::*;
 
 #[derive(Clone, Copy)]
@@ -19,6 +17,7 @@ pub struct App {
     pub chaikin_points: Vec<Point>,
     pub start_animation: bool,
     pub steps: u32,
+    pub last_update: f64,
 }
 
 impl App {
@@ -28,6 +27,7 @@ impl App {
             chaikin_points: Vec::new(),
             start_animation: false,
             steps: 0,
+            last_update: get_time(),
         }
     }
 
@@ -66,25 +66,34 @@ impl App {
         self.chaikin_points = new_points;
     }
 
-    pub fn animate(&mut self) {
-        if self.chaikin_points.len() == 2 {
-            let start = self.chaikin_points[0];
-            let end = self.chaikin_points[1];
+     fn draw_chaikin_lines(&self) {
+        let points = &self.chaikin_points;
+
+        if points.len() < 2 {
+            return;
+        }
+
+        for i in 0..points.len() - 1 {
+            let start = points[i];
+            let end = points[i + 1];
             draw_line(start.x, start.y, end.x, end.y, 2.0, WHITE);
+        }
+    }
+
+    pub fn animate(&mut self) {
+        self.draw_chaikin_lines();
+
+        if get_time() - self.last_update < 0.5 {
+            return;
+        }
+        if self.chaikin_points.len() == 2 {
+            self.draw_chaikin_lines();
         } else if self.chaikin_points.len() > 2 {
-            for i in 0..self.chaikin_points.len() - 1 {
-                let start = self.chaikin_points[i];
-                let end  = self.chaikin_points[i + 1];
-                draw_line(start.x, start.y, end.x, end.y, 2.0, WHITE);
-            }
+                self.last_update = get_time();
+                self.chaikin_alg();
+                self.steps += 1;
 
-            thread::sleep(time::Duration::from_millis(500));
-
-            self.chaikin_alg();
-            
-            self.steps += 1;
-
-            if self.steps == 7 {
+            if self.steps == 8 {
                 self.chaikin_points = self.default_points.clone();
                 self.steps = 0;
             }
@@ -93,7 +102,6 @@ impl App {
         }
     }
 }
-
 pub fn draw_ui(app: &App) {
       if !app.start_animation{
             draw_text(
