@@ -1,12 +1,20 @@
+mod app;
+use app::*;
 use macroquad::prelude::*;
 
-#[macroquad::main("Interactive Points Example")]
+#[macroquad::main("Chaikin's Algorithm")]
 async fn main() {
-        draw_text(
-            "Left click to add points | R to reset | ESC to exit",
-            20.0,
-            20.0,
-            25.0,
-            GREEN,
-        );
+
+    let mut app: App = App::new();
+
+    loop {
+        if is_key_pressed(KeyCode::Escape) {
+            break;
+        }
+        draw_ui(&app);
+    
+        next_frame().await;
+        }
+
+     
 }
