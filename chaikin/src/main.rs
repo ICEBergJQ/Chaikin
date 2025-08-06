@@ -19,7 +19,18 @@ async fn main() {
             if !app.start_animation {
                 app.chaikin_points = app.default_points.clone();
             }
+            app.start_animation = true;
         }
+
+        if app.start_animation {
+            app.animate();
+        } else {
+            if is_mouse_button_pressed(MouseButton::Left) {
+                let (x, y) = mouse_position();
+                app.add_point(x, y);
+            }
+        }
+
         draw_ui(&app);
     
         next_frame().await;
