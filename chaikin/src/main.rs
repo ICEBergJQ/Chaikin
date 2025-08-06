@@ -31,6 +31,11 @@ async fn main() {
             }
         }
 
+        for point in &app.default_points {
+            draw_circle(point.x, point.y, 3.0, WHITE);
+            draw_circle(point.x, point.y, 2.0, BLACK);
+        }
+
         draw_ui(&app);
     
         next_frame().await;
