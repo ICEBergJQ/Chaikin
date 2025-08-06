@@ -38,6 +38,40 @@ impl App {
     pub fn reset(&mut self) {
         *self = App::new();
     }
+
+    fn chaikin(&mut self) {
+        let points = &self.chaikin_points;
+
+        let length = points.len();
+        let start = points[0];
+        let end = points[length - 1];
+
+        let mut new_points = vec![start];
+
+        for i in 0..length - 1 {
+            let current = points[i];
+            let next = points[i + 1];
+            let dx = next.x - current.x;
+            let dy = next.y - current.y;
+
+            let new_1 = Vec2 {
+                x: current.x + dx * 0.25,
+                y: current.y + dy * 0.25,
+            };
+            let new_2 = Vec2 {
+                x: current.x + dx * 0.75,
+                y: current.y + dy * 0.75,
+            };
+
+            new_points.push(new_1);
+            new_points.push(new_2);
+        }
+
+        new_points.push(end);
+
+        self.chaikin_points = new_points;
+    }
+
      pub fn animate(&mut self) {
         if self.chaikin_points.len() >= 2 {
             for i in 0..self.chaikin_points.len() - 1 {
