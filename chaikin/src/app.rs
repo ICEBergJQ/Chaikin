@@ -1,4 +1,5 @@
 use macroquad::prelude::*;
+use std::{thread, time};
 
 #[derive(Clone, Copy)]
 pub struct Point {
@@ -37,6 +38,31 @@ impl App {
     pub fn reset(&mut self) {
         *self = App::new();
     }
+     pub fn animate(&mut self) {
+        if self.chaikin_points.len() >= 2 {
+            for i in 0..self.chaikin_points.len() - 1 {
+                let start = self.chaikin_points[i];
+                let end = self.chaikin_points[i + 1];
+                draw_line(start.x, start.y, end.x, end.y, 2.0, WHITE);
+            }
+
+            thread::sleep(time::Duration::from_millis(500));
+
+            // self.chaikin();
+            
+            self.steps += 1;
+
+            if self.steps == 7 {
+                self.chaikin_points = self.default_points.clone();
+                self.steps = 0;
+            }
+        } else {
+            self.start_animation = false;
+        }
+    }
+
+    
+
 }
 
 
