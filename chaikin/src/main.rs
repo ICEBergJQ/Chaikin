@@ -4,21 +4,22 @@ use macroquad::prelude::*;
 
 #[macroquad::main("Chaikin's Algorithm")]
 async fn main() {
-
     let mut app: App = App::new();
 
     loop {
         if is_key_pressed(KeyCode::Escape) {
             break;
         }
+
         if is_key_pressed(KeyCode::R) {
-            app.clear();
+            app.reset();
         }
 
         if is_key_pressed(KeyCode::Enter) {
             if !app.start_animation {
                 app.chaikin_points = app.default_points.clone();
             }
+
             app.start_animation = true;
         }
 
@@ -27,7 +28,7 @@ async fn main() {
         } else {
             if is_mouse_button_pressed(MouseButton::Left) {
                 let (x, y) = mouse_position();
-                app.add_point(x, y);
+                app.new_point(x, y);
             }
         }
 
@@ -35,9 +36,8 @@ async fn main() {
             draw_circle(point.x, point.y, 3.0, WHITE);
             draw_circle(point.x, point.y, 2.0, BLACK);
         }
-
         draw_ui(&app);
-    
+
         next_frame().await;
-        }
+    }
 }
